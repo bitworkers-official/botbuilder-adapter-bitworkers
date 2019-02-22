@@ -8,6 +8,7 @@
     "dist"
   ],
   "scripts": {
+    "lint": "eslint src --ext ts",
     "build": "tsc",
     "postinstall": "npm install botbuilder",
     "semantic-release": "semantic-release"
@@ -27,7 +28,8 @@
     "lint-staged": "^8.1.4",
     "prettier": "^1.16.4",
     "prettier-config-bitworkers": "^1.5.0",
-    "semantic-release": "^15.13.3"
+    "semantic-release": "^15.13.3",
+    "typescript": "^3.3.3333"
   },
   "peerDependencies": {
     "botbuilder": "^4.2.1",
