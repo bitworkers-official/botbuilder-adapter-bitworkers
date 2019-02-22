@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "lint": "eslint src --ext ts",
+    "lint": "eslint src --ext ts && prettier --list-different src/*.ts",
     "build": "tsc",
     "semantic-release": "semantic-release"
   },
