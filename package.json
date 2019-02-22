@@ -1,0 +1,56 @@
+{
+  "name": "botbuilder-adapter",
+  "version": "0.0.0-semantically-released",
+  "description": "Adapter for the BotbuilderJS framework",
+  "main": "src/index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "npm install botbuilder",
+    "semantic-release": "semantic-release"
+  },
+  "author": "Bitworkers",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitworkers-official/botbuilder-adapter.git"
+  },
+  "devDependencies": {
+    "botbuilder": "^4.2.1",
+    "botbuilder-dialogs": "^4.2.1",
+    "eslint": "^5.14.1",
+    "eslint-config-bitworkers": "^1.17.0",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.4",
+    "prettier": "^1.16.4",
+    "prettier-config-bitworkers": "^1.5.0",
+    "semantic-release": "^15.13.3"
+  },
+  "peerDependencies": {
+    "botbuilder": "^4.2.1",
+    "botbuilder-dialogs": "^4.2.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add",
+      "jest --bail --findRelatedTests"
+    ],
+    "{!(package)*.json,*.code-snippets,.*rc}": [
+      "npx prettier --write",
+      "git add"
+    ],
+    "package.json": [
+      "npx prettier --write",
+      "git add"
+    ]
+  }
+}
