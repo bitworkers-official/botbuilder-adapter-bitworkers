@@ -2,9 +2,10 @@
   "name": "botbuilder-adapter",
   "version": "0.0.0-semantically-released",
   "description": "Adapter for the BotbuilderJS framework",
-  "main": "src/index.js",
+  "main": "dist/index.js",
+  "source": "src/index.ts",
   "files": [
-    "index.js"
+    "dist"
   ],
   "scripts": {
     "build": "tsc",
