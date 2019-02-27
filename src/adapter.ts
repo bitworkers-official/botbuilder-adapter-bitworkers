@@ -4,6 +4,8 @@ import {
   UserState,
   TurnContext,
   ConversationState,
+  BotState,
+  Storage,
 } from 'botbuilder'
 import { DialogSet, DialogContext } from 'botbuilder-dialogs'
 
@@ -42,19 +44,30 @@ export interface Adapter {
    *  A proxy for the onTurn function provided by the user
    */
   onTurn: (turnContext: TurnContext) => Promise<void>
+
   /**
    * Use state which is saved after every turn
+   *
+   * @param initialState - the initial state
+   * @param options options
+   * @param options.propertyName - name of the state (e.g. for database tables)
+   * @param options.state - scope of the state, (e.g if the state is specific to a user or a specific to a group chat or both)
+   * @example
+   * const userState = adapter.useState({ name: 'Tom' }, {state: new UserState(cosmosDBStorage)})
+   *
    */
-  readonly useState: <T = any>(initialState: T) => StateAccessor<T>
+  readonly useState: <T = any>(
+    initialState: T,
+    options: { propertyName?: string; state?: BotState }
+  ) => StateAccessor<T>
 }
 
-export function createAdapter({
-  storage = new MemoryStorage(),
-  conversationState = new ConversationState(storage),
-}: {
-  storage?: MemoryStorage
-  conversationState?: ConversationState
-} = {}): Adapter {
+/**
+ * Creates a bot adapter.
+ * @param storage - the storage to use, can be MemoryStorage or CosmosDBStorage or something else
+ */
+export function createAdapter(storage: Storage = new MemoryStorage()): Adapter {
+  const conversationState = new ConversationState(storage)
   /**
    * The current turn context, needed for getting and setting state
    */
@@ -69,10 +82,6 @@ export function createAdapter({
    * The onTurn function provided by the user
    */
   let _onTurn: (turnContext: TurnContext) => Promise<void>
-  /**
-   * An Array of states that the user provided
-   */
-  const _states: UserState[] = []
   return {
     addDialogs(dialogs) {
       for (const dialog of dialogs) {
@@ -88,27 +97,25 @@ export function createAdapter({
         _turnContext = turnContext
         // make the turn that the user provided
         await _onTurn(_turnContext)
-        // save every state for the next round
-        await Promise.all(
-          [conversationState, ..._states].map(state =>
-            state.saveChanges(turnContext)
-          )
-        )
+        // save the conversation state for the next round
+        await conversationState.saveChanges(turnContext)
       }
     },
     set onTurn(onTurn) {
       _onTurn = onTurn
     },
-    useState(initialState) {
-      const state = new UserState(storage)
-      _states.push(state)
-      const accessor = state.createProperty('state')
+    useState(
+      initialState,
+      { propertyName = 'state', state = new UserState(storage) }
+    ) {
+      const accessor = state.createProperty(propertyName)
       return {
         async get() {
           return accessor.get(_turnContext, initialState)
         },
         async set(value) {
-          return accessor.set(_turnContext, value)
+          await accessor.set(_turnContext, value)
+          await state.saveChanges(_turnContext)
         },
       }
     },
