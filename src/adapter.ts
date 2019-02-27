@@ -106,7 +106,7 @@ export function createAdapter(storage: Storage = new MemoryStorage()): Adapter {
     },
     useState(
       initialState,
-      { propertyName = 'state', state = new UserState(storage) }
+      { propertyName = 'state', state = new UserState(storage) } = {}
     ) {
       const accessor = state.createProperty(propertyName)
       return {
