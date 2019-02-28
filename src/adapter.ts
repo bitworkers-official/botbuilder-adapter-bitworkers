@@ -58,7 +58,7 @@ export interface Adapter {
    */
   readonly useState: <T = any>(
     initialState: T,
-    options?: { propertyName?: string; state?: BotState }
+    { propertyName, state }?: { propertyName: string; state: BotState }
   ) => StateAccessor<T>
 }
 
@@ -106,7 +106,10 @@ export function createAdapter(storage: Storage = new MemoryStorage()): Adapter {
     },
     useState(
       initialState,
-      { propertyName = 'state', state = new UserState(storage) } = {}
+      {
+        propertyName = 'state',
+        state = new UserState(storage),
+      }: { propertyName?: string; state?: BotState } = {}
     ) {
       const accessor = state.createProperty(propertyName)
       return {
