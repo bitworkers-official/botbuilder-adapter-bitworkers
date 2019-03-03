@@ -118,6 +118,7 @@ export function createAdapter(storage: Storage = new MemoryStorage()): Adapter {
           return accessor.get(_turnContext, initialState)
         },
         async set(turnContext: TurnContext, value) {
+          _turnContext = turnContext
           await accessor.set(_turnContext, value)
           await state.saveChanges(_turnContext)
         },
