@@ -14,21 +14,21 @@ import { DialogSet, DialogContext } from 'botbuilder-dialogs'
  * @example
  * ```js
  * // get the state
- * const state = await stateAccessor.get()
+ * const state = await stateAccessor.get(context)
  *
  * // set the state
- * await stateAccessor.set({ x: 2 })
+ * await stateAccessor.set(context, { x: 2 })
  * ```
  */
 export interface StateAccessor<T> {
   /**
    * Get the value
    */
-  readonly get: () => Promise<T>
+  readonly get: (turnContext: TurnContext) => Promise<T>
   /**
    * Set the value
    */
-  readonly set: (value: T) => Promise<void>
+  readonly set: (turnContext: TurnContext, value: T) => Promise<void>
 }
 
 export interface Adapter {
@@ -113,10 +113,11 @@ export function createAdapter(storage: Storage = new MemoryStorage()): Adapter {
     ) {
       const accessor = state.createProperty(propertyName)
       return {
-        get() {
+        get(turnContext: TurnContext) {
+          _turnContext = turnContext
           return accessor.get(_turnContext, initialState)
         },
-        async set(value) {
+        async set(turnContext: TurnContext, value) {
           await accessor.set(_turnContext, value)
           await state.saveChanges(_turnContext)
         },
