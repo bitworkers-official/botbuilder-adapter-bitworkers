@@ -113,7 +113,7 @@ export function createAdapter(storage: Storage = new MemoryStorage()): Adapter {
     ) {
       const accessor = state.createProperty(propertyName)
       return {
-        async get() {
+        get() {
           return accessor.get(_turnContext, initialState)
         },
         async set(value) {
