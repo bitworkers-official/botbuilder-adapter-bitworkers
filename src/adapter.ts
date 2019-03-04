@@ -65,7 +65,7 @@ export interface Adapter {
 
 /**
  * Creates a bot adapter.
- * @param storage - the storage to use, can be MemoryStorage or CosmosDBStorage or something else
+ * @param conversationState - the conversationState to use, can be based on MemoryStorage or CosmosDBStorage or something else
  */
 export function createAdapter(
   conversationState: ConversationState = new ConversationState(
@@ -87,8 +87,8 @@ export function createAdapter(
     createDialogContext(turnContext) {
       return _dialogSet.createContext(turnContext)
     },
-    // eslint-disable-next-line no-empty-function, @typescript-eslint/no-unused-vars
-    async onTurn(turnContext: TurnContext) {},
+    // eslint-disable-next-line no-empty-function
+    async onTurn() {},
     useState(
       initialState,
       {
