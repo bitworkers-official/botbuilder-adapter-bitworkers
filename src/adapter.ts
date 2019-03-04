@@ -72,6 +72,7 @@ export function createAdapter(
     new MemoryStorage()
   )
 ): Adapter {
+  let _onTurn: (turnContext: TurnContext) => Promise<void> = Promise.resolve
   /**
    * Dialog set, needed for adding and removing dialogs
    */
@@ -87,8 +88,17 @@ export function createAdapter(
     createDialogContext(turnContext) {
       return _dialogSet.createContext(turnContext)
     },
-    // eslint-disable-next-line no-empty-function
-    async onTurn() {},
+    get onTurn() {
+      return async (turnContext: TurnContext) => {
+        // make the turn that the user provided
+        await _onTurn(turnContext)
+        // save the conversation state for the next round
+        await conversationState.saveChanges(turnContext)
+      }
+    },
+    set onTurn(onTurn) {
+      _onTurn = onTurn
+    },
     useState(
       initialState,
       {
