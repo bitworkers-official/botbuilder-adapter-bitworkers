@@ -1,8 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import {
-  TurnContext,
-  ConversationState,
-} from 'botbuilder'
+import { TurnContext, ConversationState } from 'botbuilder'
 import { DialogSet, DialogContext } from 'botbuilder-dialogs'
 
 export interface Adapter {
