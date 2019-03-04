@@ -1,2 +1,2 @@
-export { createAdapter, StateAccessor } from './adapter'
+export { createAdapter } from './adapter'
 export { createTestAdapter } from './testAdapter'
