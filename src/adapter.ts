@@ -1,6 +1,34 @@
 /* eslint-disable no-underscore-dangle */
-import { TurnContext, ConversationState } from 'botbuilder'
+import {
+  TurnContext,
+  ConversationState,
+  BotState,
+  UserState,
+  MemoryStorage,
+} from 'botbuilder'
 import { DialogSet, DialogContext } from 'botbuilder-dialogs'
+
+/**
+ * A state accessor is just a proxy around a value with the methods 'get' and 'set', similar to localStorage
+ * @example
+ * ```js
+ * // get the state
+ * const state = await stateAccessor.get(context)
+ *
+ * // set the state
+ * await stateAccessor.set(context, { x: 2 })
+ * ```
+ */
+export interface StateAccessor<T> {
+  /**
+   * Get the value
+   */
+  readonly get: (turnContext: TurnContext) => Promise<T>
+  /**
+   * Set the value
+   */
+  readonly set: (turnContext: TurnContext, value: T) => Promise<void>
+}
 
 export interface Adapter {
   /**
@@ -10,11 +38,29 @@ export interface Adapter {
   /**
    * Create a dialog context for starting dialogs
    */
-  readonly createDialogContext: () => Promise<DialogContext>
+  readonly createDialogContext: (
+    turnContext: TurnContext
+  ) => Promise<DialogContext>
   /**
    *  A proxy for the onTurn function provided by the user
    */
   onTurn: (turnContext: TurnContext) => Promise<void>
+
+  /**
+   * Use state which can be used for saving data between turns
+   *
+   * @param initialState - the initial state
+   * @param options options
+   * @param options.propertyName - name of the state (e.g. for database tables)
+   * @param options.state - scope of the state, (e.g if the state is specific to a user or a specific to a group chat or both)
+   * @example
+   * const userState = adapter.useState({ name: 'Tom' }, {state: new UserState(cosmosDBStorage)})
+   *
+   */
+  readonly useState: <T = any>(
+    initialState: T,
+    { propertyName, state }?: { propertyName: string; state: BotState }
+  ) => StateAccessor<T>
 }
 
 /**
@@ -22,10 +68,6 @@ export interface Adapter {
  * @param storage - the storage to use, can be MemoryStorage or CosmosDBStorage or something else
  */
 export function createAdapter(conversationState: ConversationState): Adapter {
-  /**
-   * The current turn context, needed for getting and setting state
-   */
-  let _turnContext: TurnContext
   /**
    * Dialog set, needed for adding and removing dialogs
    */
@@ -38,10 +80,28 @@ export function createAdapter(conversationState: ConversationState): Adapter {
         _dialogSet.add(dialog)
       }
     },
-    createDialogContext() {
-      return _dialogSet.createContext(_turnContext)
+    createDialogContext(turnContext) {
+      return _dialogSet.createContext(turnContext)
     },
     // eslint-disable-next-line no-empty-function, @typescript-eslint/no-unused-vars
     async onTurn(turnContext: TurnContext) {},
+    useState(
+      initialState,
+      {
+        propertyName = 'state',
+        state = new UserState(new MemoryStorage()),
+      }: { propertyName?: string; state?: BotState } = {}
+    ) {
+      const accessor = state.createProperty(propertyName)
+      return {
+        async get(turnContext: TurnContext) {
+          return accessor.get(turnContext, initialState)
+        },
+        async set(turnContext: TurnContext, value) {
+          await accessor.set(turnContext, value)
+          await state.saveChanges(turnContext)
+        },
+      }
+    },
   }
 }
