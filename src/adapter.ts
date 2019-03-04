@@ -3,7 +3,6 @@ import {
   TurnContext,
   ConversationState,
   BotState,
-  UserState,
   MemoryStorage,
 } from 'botbuilder'
 import { DialogSet, DialogContext } from 'botbuilder-dialogs'
@@ -103,7 +102,7 @@ export function createAdapter(
       initialState,
       {
         propertyName = 'state',
-        state = new UserState(new MemoryStorage()),
+        state = new ConversationState(new MemoryStorage()),
       }: { propertyName?: string; state?: BotState } = {}
     ) {
       const accessor = state.createProperty(propertyName)
