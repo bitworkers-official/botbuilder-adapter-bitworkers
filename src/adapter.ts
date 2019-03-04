@@ -58,7 +58,7 @@ export interface Adapter {
    */
   readonly useState: <T = any>(
     initialState: T,
-    { propertyName, state }?: { propertyName: string; state: BotState }
+    { propertyName, state }?: { propertyName?: string; state: BotState }
   ) => StateAccessor<T>
 }
 
