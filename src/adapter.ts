@@ -67,7 +67,11 @@ export interface Adapter {
  * Creates a bot adapter.
  * @param storage - the storage to use, can be MemoryStorage or CosmosDBStorage or something else
  */
-export function createAdapter(conversationState: ConversationState): Adapter {
+export function createAdapter(
+  conversationState: ConversationState = new ConversationState(
+    new MemoryStorage()
+  )
+): Adapter {
   /**
    * Dialog set, needed for adding and removing dialogs
    */
