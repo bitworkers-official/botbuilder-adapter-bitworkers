@@ -102,7 +102,7 @@ export function createAdapter(
       initialState,
       {
         propertyName = 'state',
-        state = new ConversationState(new MemoryStorage()),
+        state = conversationState
       }: { propertyName?: string; state?: BotState } = {}
     ) {
       const accessor = state.createProperty(propertyName)
