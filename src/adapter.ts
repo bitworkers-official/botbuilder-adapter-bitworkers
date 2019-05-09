@@ -109,8 +109,13 @@ export function createAdapter(
     ) {
       activityHandler.onMessage(
         async (turnContext: TurnContext, next: () => Promise<void>) => {
-          // make the turn that the user provided
-          await onMessage(turnContext)
+          try {
+            // make the turn that the user provided
+            await onMessage(turnContext)
+          } catch (error) {
+            console.error(error)
+            throw error
+          }
           await next()
         }
       )
@@ -133,8 +138,13 @@ export function createAdapter(
             await next()
             return
           }
-          // notify that a user was added
-          await onMembersAdded(turnContext)
+          try {
+            // notify that a user was added
+            await onMembersAdded(turnContext)
+          } catch (error) {
+            console.error(error)
+            throw error
+          }
           await next()
         }
       )
