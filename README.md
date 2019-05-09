@@ -14,7 +14,7 @@ Install the necessary dependencies:
 
 ```sh
 npm install botbuilder-adapter botbuilder botbuilder-dialogs restify typescript source-map-support &&
-npm install --save-dev nodemon ts-node
+npm install --save-dev nodemon  @types/source-map-support ts-node
 ```
 
 Create a bot:
