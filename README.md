@@ -22,7 +22,7 @@ Create a bot:
 ```typescript
 // bot.ts
 import { ActivityHandler, TurnContext } from 'botbuilder'
-import { createAdapter } from '../src/adapter'
+import { createAdapter } from 'botbuilder-adapter'
 
 async function sendCactus(context: TurnContext): Promise<void> {
   await context.sendActivity('🌵')
