@@ -1,10 +1,14 @@
-import { TestAdapter } from 'botbuilder'
-import { Adapter } from './adapter'
+import { TestAdapter, ActivityHandler } from 'botbuilder'
 
 /**
- * creates a adapter for testing
- * @param adapter
+ * Creates a adapter for testing.
+ *
+ * @param activityHandler - The bot.
  */
-export function createTestAdapter(adapter: Adapter) {
-  return new TestAdapter(adapter.onTurn)
+export function createTestAdapter(
+  activityHandler: ActivityHandler
+): TestAdapter {
+  return new TestAdapter(async context => {
+    activityHandler.run(context)
+  })
 }

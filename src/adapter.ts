@@ -4,6 +4,7 @@ import {
   ConversationState,
   BotState,
   MemoryStorage,
+  ActivityHandler,
 } from 'botbuilder'
 import { DialogSet, DialogContext } from 'botbuilder-dialogs'
 
@@ -40,10 +41,17 @@ export interface Adapter {
   readonly createDialogContext: (
     turnContext: TurnContext
   ) => Promise<DialogContext>
+
+  readonly bot: ActivityHandler
   /**
    *  A proxy for the onTurn function provided by the user
    */
-  onTurn: (turnContext: TurnContext) => Promise<void>
+  onMessage: (turnContext: TurnContext) => void | Promise<void>
+
+  /**
+   * A proxy for the onMembersAdded function provided by the user
+   */
+  onMembersAdded: (turnContext: TurnContext) => void | Promise<void>
 
   /**
    * Use state which can be used for saving data between turns
@@ -64,14 +72,20 @@ export interface Adapter {
 
 /**
  * Creates a bot adapter.
- * @param conversationState - the conversationState to use, can be based on MemoryStorage or CosmosDBStorage or something else
+ *
+ * @param conversationState - The conversationState to use, can be based on MemoryStorage or CosmosDBStorage or something else.
  */
 export function createAdapter(
   conversationState: ConversationState = new ConversationState(
     new MemoryStorage()
   )
 ): Adapter {
-  let _onTurn: (turnContext: TurnContext) => Promise<void> = Promise.resolve
+  const activityHandler = new ActivityHandler()
+  activityHandler.onDialog(async (turnContext, next) => {
+    // Save any state changes. The load happened during the execution of the Dialog.
+    // await conversationState.saveChanges(turnContext, false)
+    await next()
+  })
   /**
    * Dialog set, needed for adding and removing dialogs
    */
@@ -87,16 +101,46 @@ export function createAdapter(
     createDialogContext(turnContext) {
       return _dialogSet.createContext(turnContext)
     },
-    get onTurn() {
-      return async (turnContext: TurnContext) => {
-        // make the turn that the user provided
-        await _onTurn(turnContext)
-        // save the conversation state for the next round
-        await conversationState.saveChanges(turnContext)
-      }
+    get onMessage() {
+      throw new Error('cannot access onMessage')
     },
-    set onTurn(onTurn) {
-      _onTurn = onTurn
+    set onMessage(
+      onMessage: (turnContext: TurnContext) => void | Promise<void>
+    ) {
+      activityHandler.onMessage(
+        async (turnContext: TurnContext, next: () => Promise<void>) => {
+          // make the turn that the user provided
+          await onMessage(turnContext)
+          await next()
+        }
+      )
+    },
+    get onMembersAdded() {
+      throw new Error('cannot access onMembersAdded')
+    },
+    set onMembersAdded(
+      onMembersAdded: (turnContext: TurnContext) => void | Promise<void>
+    ) {
+      activityHandler.onMembersAdded(
+        async (turnContext: TurnContext, next: () => Promise<void>) => {
+          const { membersAdded } = turnContext.activity
+          const isBotAdded =
+            membersAdded &&
+            membersAdded.length === 1 &&
+            membersAdded[0].id !== turnContext.activity.recipient.id
+          if (isBotAdded) {
+            // user doesn't care if bot user was added
+            await next()
+            return
+          }
+          // notify that a user was added
+          await onMembersAdded(turnContext)
+          await next()
+        }
+      )
+    },
+    get bot() {
+      return activityHandler
     },
     useState(
       initialState,
