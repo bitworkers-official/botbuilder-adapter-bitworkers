@@ -7,3 +7,81 @@
 - Better Error handling
 - Easier Testing
 - Simpler Api
+
+## Usage
+
+Install the necessary dependencies:
+
+```sh
+npm install botbuilder-adapter botbuilder restify &&
+npm install --save-dev source-map-support nodemon ts-node
+```
+
+Create a bot:
+
+```typescript
+// bot.ts
+import { ActivityHandler, TurnContext } from 'botbuilder'
+import { createAdapter } from '../src/adapter'
+
+async function sendCactus(context: TurnContext): Promise<void> {
+  await context.sendActivity('🌵')
+}
+
+/**
+ * Creates a bot that just sends 🌵.
+ */
+export function createCactusBot(): ActivityHandler {
+  const adapter = createAdapter()
+  adapter.onMembersAdded = sendCactus
+  adapter.onMessage = sendCactus
+  return adapter.bot
+}
+```
+
+Create a server:
+
+```typescript
+// server.ts
+import 'source-map-support/register'
+import * as restify from 'restify'
+import { BotFrameworkAdapter } from 'botbuilder'
+import { createCactusBot } from './bot'
+
+// Create adapter.
+const adapter = new BotFrameworkAdapter({
+  appId: process.env.MicrosoftAppId,
+  appPassword: process.env.MicrosoftAppPassword,
+})
+
+// Create the bot.
+const myBot = createCactusBot()
+
+// Create HTTP server.
+const server = restify.createServer()
+
+// Listen for incoming requests.
+server.post('/api/messages', (req: any, res: any) => {
+  adapter.processActivity(req, res, async context => {
+    // Route to main dialog.
+    await myBot.run(context)
+  })
+})
+
+const port = process.env.port || process.env.PORT || 3978
+
+server.listen(port, () => {
+  console.log(`
+  🌵  listening to http://localhost:${port}/api/messages
+
+  Get Bot Framework Emulator: https://aka.ms/botframework-emulator
+  See https://aka.ms/connect-to-bot for more information
+  `)
+})
+```
+
+Run it:
+
+```sh
+npx nodemon --exec ts-node server.ts
+```
