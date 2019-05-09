@@ -13,8 +13,8 @@
 Install the necessary dependencies:
 
 ```sh
-npm install botbuilder-adapter botbuilder restify &&
-npm install --save-dev source-map-support nodemon ts-node
+npm install botbuilder-adapter botbuilder restify typescript source-map-support &&
+npm install --save-dev nodemon ts-node
 ```
 
 Create a bot:
