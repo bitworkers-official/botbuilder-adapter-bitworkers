@@ -1,5 +1,5 @@
 import { ActivityHandler, TurnContext } from 'botbuilder'
-import { createAdapter } from '../src/adapter'
+import { createAdapter } from '../../src/adapter'
 
 async function sendCactus(context: TurnContext): Promise<void> {
   await context.sendActivity('🌵')

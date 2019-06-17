@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-underscore-dangle */
 import {
   TurnContext,
@@ -5,8 +6,17 @@ import {
   BotState,
   MemoryStorage,
   ActivityHandler,
+  ChannelAccount,
 } from 'botbuilder'
-import { DialogSet, DialogContext } from 'botbuilder-dialogs'
+import {
+  DialogSet,
+  DialogContext,
+  DialogTurnResult,
+  ComponentDialog,
+  WaterfallDialog,
+  DialogState,
+} from 'botbuilder-dialogs'
+import { Dialog, dialogMap, randomId, modStep } from './Dialog'
 
 /**
  * A state accessor is just a proxy around a value with the methods 'get' and 'set', similar to localStorage
@@ -44,14 +54,17 @@ export interface Adapter {
 
   readonly bot: ActivityHandler
   /**
-   *  A proxy for the onTurn function provided by the user
+   *  This function is called when the user has sent a message.
    */
   onMessage: (turnContext: TurnContext) => void | Promise<void>
 
   /**
-   * A proxy for the onMembersAdded function provided by the user
+   * This function is called when a user has entered the conversation.
    */
-  onMembersAdded: (turnContext: TurnContext) => void | Promise<void>
+  onMembersAdded: (
+    turnContext: TurnContext,
+    membersAdded: ChannelAccount[]
+  ) => void | Promise<void>
 
   /**
    * Use state which can be used for saving data between turns
@@ -68,6 +81,9 @@ export interface Adapter {
     initialState: T,
     { propertyName, state }?: { propertyName?: string; state: BotState }
   ) => StateAccessor<T>
+
+  beginDialog: (dialog: Dialog) => Promise<void>
+  continueDialog: () => Promise<DialogTurnResult<any>>
 }
 
 /**
@@ -86,12 +102,19 @@ export function createAdapter(
     // await conversationState.saveChanges(turnContext, false)
     await next()
   })
+  const _dialogState = conversationState.createProperty<DialogState>(
+    'dialog_state'
+  )
   /**
    * Dialog set, needed for adding and removing dialogs
    */
-  const _dialogSet = new DialogSet(
-    conversationState.createProperty('dialog_state')
-  )
+  const _dialogSet = new DialogSet(_dialogState)
+
+  /**
+   * The dialog context, needed for starting and switching between dialogs.
+   */
+  let _dialogContext: DialogContext
+
   return {
     addDialogs(dialogs) {
       for (const dialog of dialogs) {
@@ -110,12 +133,14 @@ export function createAdapter(
       activityHandler.onMessage(
         async (turnContext: TurnContext, next: () => Promise<void>) => {
           try {
+            _dialogContext = await _dialogSet.createContext(turnContext)
             // make the turn that the user provided
             await onMessage(turnContext)
           } catch (error) {
             console.error(error)
             throw error
           }
+          await conversationState.saveChanges(turnContext, false)
           await next()
         }
       )
@@ -124,7 +149,10 @@ export function createAdapter(
       throw new Error('cannot access onMembersAdded')
     },
     set onMembersAdded(
-      onMembersAdded: (turnContext: TurnContext) => void | Promise<void>
+      onMembersAdded: (
+        turnContext: TurnContext,
+        membersAdded: ChannelAccount[]
+      ) => void | Promise<void>
     ) {
       activityHandler.onMembersAdded(
         async (turnContext: TurnContext, next: () => Promise<void>) => {
@@ -140,7 +168,7 @@ export function createAdapter(
           }
           try {
             // notify that a user was added
-            await onMembersAdded(turnContext)
+            await onMembersAdded(turnContext, membersAdded!)
           } catch (error) {
             console.error(error)
             throw error
@@ -169,6 +197,26 @@ export function createAdapter(
           await state.saveChanges(turnContext)
         },
       }
+    },
+    async beginDialog(dialog) {
+      if (!dialogMap.has(dialog)) {
+        const id = `dialog-${randomId()}`
+        const dialogClass = new (class extends ComponentDialog {
+          constructor() {
+            super(id)
+            this.addDialog(
+              new WaterfallDialog(`waterfall-${id}`, dialog.steps.map(modStep))
+            )
+          }
+        })()
+        dialogMap.set(dialog, { id, dialogClass })
+        _dialogSet.add(dialogClass)
+      }
+      const dialogId = dialogMap.get(dialog)!.id
+      await _dialogContext.beginDialog(dialogId)
+    },
+    async continueDialog() {
+      return _dialogContext.continueDialog()
     },
   }
 }

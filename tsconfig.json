@@ -1,5 +1,4 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2017",
@@ -13,7 +12,10 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": ".",
-    "types": ["jest"]
+    "types": ["jest"],
+    "strictFunctionTypes": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*"]
+  "include": ["examples/**/*", "src/**/*"],
+  "exclude": ["deprecated"]
 }
