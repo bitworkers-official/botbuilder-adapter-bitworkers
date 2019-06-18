@@ -40,7 +40,7 @@ export interface StepContext<Options = any, Result = any> {
     promptType,
     attachments,
   }: {
-    message: string
+    message?: string
     retryMessage?: string
     attachments?: any[]
     promptType?: Prompt<any>
@@ -156,10 +156,13 @@ function createStepContext(
         throw new Error('cannot find active dialog')
       }
       activeDialogClass.addDialog(promptType)
+      if (message && attachments) {
+        throw new Error('either pass message or attachments but not both')
+      }
+      const prompt = message || { attachments }
       return waterfallStepContext.prompt(promptType.id, {
-        prompt: message,
+        prompt,
         retryPrompt: retryMessage,
-        attachments,
       })
     },
   }
