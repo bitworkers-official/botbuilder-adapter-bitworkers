@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2017",
+    "target": "esnext",
     "strict": true,
     "sourceMap": true,
     "declaration": true,
@@ -10,8 +10,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": ".",
     "types": ["jest"],
     "strictFunctionTypes": true,
     "resolveJsonModule": true

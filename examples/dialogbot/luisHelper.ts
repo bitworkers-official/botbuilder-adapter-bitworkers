@@ -1,6 +1,6 @@
 import { RecognizerResult, TurnContext } from 'botbuilder'
 import { LuisRecognizer } from 'botbuilder-ai'
-import { BookingDetails } from '../types'
+import { BookingDetails } from './types'
 
 export function parseCompositeEntity(
   result: RecognizerResult,

@@ -16,7 +16,7 @@ import {
   WaterfallDialog,
   DialogState,
 } from 'botbuilder-dialogs'
-import { Dialog, dialogMap, randomId, modStep } from './Dialog'
+import { Dialog, randomId, modStep, DialogMap } from './Dialog'
 
 /**
  * A state accessor is just a proxy around a value with the methods 'get' and 'set', similar to localStorage
@@ -115,6 +115,11 @@ export function createAdapter(
    */
   let _dialogContext: DialogContext
 
+  const dialogMap: DialogMap = new Map<
+    Dialog,
+    { id: string; dialogClass: ComponentDialog }
+  >()
+
   return {
     addDialogs(dialogs) {
       for (const dialog of dialogs) {
@@ -167,6 +172,7 @@ export function createAdapter(
             return
           }
           try {
+            console.log('on mem')
             // notify that a user was added
             await onMembersAdded(turnContext, membersAdded!)
           } catch (error) {
@@ -205,7 +211,10 @@ export function createAdapter(
           constructor() {
             super(id)
             this.addDialog(
-              new WaterfallDialog(`waterfall-${id}`, dialog.steps.map(modStep))
+              new WaterfallDialog(
+                `waterfall-${id}`,
+                dialog.steps.map(step => modStep(step, dialogMap))
+              )
             )
           }
         })()

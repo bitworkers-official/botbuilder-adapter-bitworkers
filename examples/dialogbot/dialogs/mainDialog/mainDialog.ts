@@ -1,9 +1,9 @@
 // @ts-ignore
 import { TimexProperty } from '@microsoft/recognizers-text-data-types-timex-expression'
-import { BookingDialog } from './bookingDialog'
-import * as LuisHelper from './luisHelper'
-import { Dialog, Step } from '../../../src/Dialog'
-import { BookingDetails } from '../types'
+import { BookingDialog } from '../bookingDialog/bookingDialog'
+import * as LuisHelper from '../../luisHelper'
+import { Dialog, Step } from '../../../../src/Dialog'
+import { BookingDetails } from '../../types'
 
 type Options = BookingDetails
 

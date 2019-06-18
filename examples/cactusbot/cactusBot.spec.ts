@@ -2,7 +2,7 @@
 /* eslint-disable promise/catch-or-return */
 import { TestAdapter } from 'botbuilder'
 import { createCactusBot } from './cactusBot'
-import { createTestAdapter } from '../../src/testAdapter'
+import { createTestAdapter } from '../../src'
 
 function createTestBot(): TestAdapter {
   return createTestAdapter(createCactusBot())

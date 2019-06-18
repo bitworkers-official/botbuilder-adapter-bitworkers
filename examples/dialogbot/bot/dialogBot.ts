@@ -3,7 +3,7 @@ import { ActivityHandler } from 'botbuilder'
 import { DialogTurnStatus } from 'botbuilder-dialogs'
 import { createAdapter } from '../../../src/adapter'
 import { cards } from '../cards/cards'
-import { MainDialog } from '../dialogs/mainDialog'
+import { MainDialog } from '../dialogs/mainDialog/mainDialog'
 
 /**
  * Creates a bot that just sends back what the user has sent.

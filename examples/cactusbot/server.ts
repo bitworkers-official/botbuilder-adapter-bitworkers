@@ -2,7 +2,7 @@
 import 'source-map-support/register'
 import * as restify from 'restify'
 import { BotFrameworkAdapter } from 'botbuilder'
-import { createCactusBot } from './bot'
+import { createCactusBot } from './cactusBot'
 
 // Create adapter.
 const adapter = new BotFrameworkAdapter({

@@ -46,25 +46,29 @@ export interface StepContext<Options = any, Result = any> {
   readonly next: (result?: any) => Promise<DialogTurnResult>
 }
 
-export const dialogMap = new Map<
+export type DialogMap = Map<
   Dialog,
   { id: string; dialogClass: ComponentDialog }
->()
+>
 
 export function randomId(): string {
   return Math.random().toFixed(10)
 }
 
 export function modStep(
-  step: Step
+  step: Step,
+  dialogMap: DialogMap
 ): (stepContext: WaterfallStepContext) => Promise<DialogTurnResult> {
   return async waterfallStepContext => {
-    const stepContext = createStepContext(waterfallStepContext)
+    const stepContext = createStepContext(waterfallStepContext, dialogMap)
     return step(stepContext)
   }
 }
 
-function getDialogClassById(id: string): ComponentDialog | undefined {
+function getDialogClassById(
+  id: string,
+  dialogMap: DialogMap
+): ComponentDialog | undefined {
   const found = [...dialogMap].find(([_, { id: otherId }]) =>
     id.endsWith(otherId)
   )
@@ -74,8 +78,9 @@ function getDialogClassById(id: string): ComponentDialog | undefined {
   return found[1].dialogClass
 }
 
-export function createStepContext(
-  waterfallStepContext: WaterfallStepContext
+function createStepContext(
+  waterfallStepContext: WaterfallStepContext,
+  dialogMap: DialogMap
 ): StepContext {
   return {
     // @ts-ignore
@@ -88,7 +93,7 @@ export function createStepContext(
             this.addDialog(
               new WaterfallDialog(
                 `waterfall-${newDialogId}`,
-                dialog.steps.map(modStep)
+                dialog.steps.map(step => modStep(step, dialogMap))
               )
             )
             if (dialog.middleware) {
@@ -96,7 +101,6 @@ export function createStepContext(
                 middleware => middleware.onBeginDialog
               )
               if (onBeginDialogMiddlewares.length > 0) {
-                console.log('add middleawre')
                 this.onBeginDialog = createMiddlewareDialog(
                   onBeginDialogMiddlewares,
                   super.onBeginDialog.bind(this),
@@ -117,7 +121,7 @@ export function createStepContext(
           }
         })()
         const activeDialogId = waterfallStepContext.activeDialog!.id
-        const activeDialogClass = getDialogClassById(activeDialogId)
+        const activeDialogClass = getDialogClassById(activeDialogId, dialogMap)
         if (!activeDialogClass) {
           throw new Error('cannot find active dialog')
         }
@@ -140,7 +144,7 @@ export function createStepContext(
     },
     prompt({ message, retryMessage, promptType = prompts.text() }) {
       const activeDialogId = waterfallStepContext.activeDialog!.id
-      const activeDialogClass = getDialogClassById(activeDialogId)
+      const activeDialogClass = getDialogClassById(activeDialogId, dialogMap)
       if (!activeDialogClass) {
         throw new Error('cannot find active dialog')
       }

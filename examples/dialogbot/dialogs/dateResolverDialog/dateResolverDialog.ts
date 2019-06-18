@@ -2,9 +2,9 @@
 // @ts-ignore
 import { TimexProperty } from '@microsoft/recognizers-text-data-types-timex-expression'
 import { PromptValidatorContext, DateTimeResolution } from 'botbuilder-dialogs'
-import { prompts } from '../../../src/prompts'
-import { CancelAndHelpMiddleware } from '../middleware/cancelAndHelpMiddleware'
-import { Step, Dialog } from '../../../src/Dialog'
+import { prompts } from '../../../../src/prompts'
+import { CancelAndHelpMiddleware } from '../../middleware/cancelAndHelpMiddleware'
+import { Step, Dialog } from '../../../../src/Dialog'
 
 interface Options {
   date: string | undefined
@@ -29,7 +29,7 @@ const initialStep: Step<Options> = async stepContext => {
   const timex = stepContext.options.date
   const promptMsg = 'On what date would you like to travel?'
   const repromptMsg =
-    'I\'m sorry, for best results, please enter your travel date including the month, day and year.'
+    "I'm sorry, for best results, please enter your travel date including the month, day and year."
 
   const promptType = prompts.datetime({ validator: dateTimePromptValidator })
   if (!timex) {
@@ -50,7 +50,6 @@ const initialStep: Step<Options> = async stepContext => {
 }
 
 const finalStep: Step<Options, [{ timex: string }]> = async stepContext => {
-  console.log(stepContext.result)
   const { timex } = stepContext.result[0]
   return stepContext.endDialog(timex)
 }

@@ -1,10 +1,10 @@
 // @ts-ignore
 import { TimexProperty } from '@microsoft/recognizers-text-data-types-timex-expression'
-import { Step, Dialog } from '../../../src/Dialog'
-import { BookingDetails } from '../types'
-import { dateResolverDialog } from './dateResolverDialog'
-import { prompts } from '../../../src/prompts'
-import { CancelAndHelpMiddleware } from '../middleware/cancelAndHelpMiddleware'
+import { Step, Dialog } from '../../../../src/Dialog'
+import { BookingDetails } from '../../types'
+import { dateResolverDialog } from '../dateResolverDialog/dateResolverDialog'
+import { prompts } from '../../../../src/prompts'
+import { CancelAndHelpMiddleware } from '../../middleware/cancelAndHelpMiddleware'
 
 function isAmbiguous(timex: string): boolean {
   const timexProperty = new TimexProperty(timex)
