@@ -34,17 +34,16 @@ export interface StepContext<Options = any, Result = any> {
   readonly endDialog: (returnValue?: any) => Promise<DialogTurnResult>
   readonly options: Options
   readonly result: Result
-  readonly prompt: ({
+  readonly prompt: (({
     message,
     retryMessage,
     promptType,
-    attachments,
   }: {
     message?: string
     retryMessage?: string
-    attachments?: any[]
     promptType?: Prompt<any>
-  }) => Promise<DialogTurnResult>
+  }) => Promise<DialogTurnResult>) &
+    (({ attachments }: { attachments?: any[] }) => Promise<DialogTurnResult>)
   readonly next: (result?: any) => Promise<DialogTurnResult>
 }
 
@@ -144,9 +143,13 @@ function createStepContext(
     next() {
       return waterfallStepContext.next()
     },
+    // @ts-ignore
     prompt({
+      // @ts-ignore
       message,
+      // @ts-ignore
       retryMessage,
+      // @ts-ignore
       attachments,
       promptType = prompts.text(),
     }) {
