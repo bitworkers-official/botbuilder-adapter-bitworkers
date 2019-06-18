@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "lint": "eslint src --ext ts && prettier --list-different src/*.ts",
-    "build": "rimraf dist && tsc && mv dist/src dist2 && rimraf dist && mv dist2 dist",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
     "semantic-release": "semantic-release",
     "dev": "npm run example:cactusbot",
     "test": "jest",
