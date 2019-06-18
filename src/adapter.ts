@@ -99,7 +99,7 @@ export function createAdapter(
   const activityHandler = new ActivityHandler()
   activityHandler.onDialog(async (turnContext, next) => {
     // Save any state changes. The load happened during the execution of the Dialog.
-    // await conversationState.saveChanges(turnContext, false)
+    await conversationState.saveChanges(turnContext, false)
     await next()
   })
   const _dialogState = conversationState.createProperty<DialogState>(
