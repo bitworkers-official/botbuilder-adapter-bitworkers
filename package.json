@@ -12,7 +12,7 @@
     "lint": "eslint src --ext ts && prettier --list-different src/*.ts",
     "build": "rimraf dist && tsc && mv dist/src dist2 && rimraf dist && mv dist2 dist",
     "semantic-release": "semantic-release",
-    "dev": "npm run example:dialogbot",
+    "dev": "npm run example:cactusbot",
     "test": "jest",
     "example:echobot": "nodemon --ext ts --exec \"ts-node examples/echobot/server.ts\"",
     "example:cactusbot": "nodemon --ext ts --exec \"ts-node examples/cactusbot/server.ts\"",
