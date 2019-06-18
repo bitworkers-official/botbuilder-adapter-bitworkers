@@ -4,3 +4,5 @@ export {
   createTestAdapterFromDialog,
   expectSuggestedActionsMatch,
 } from './testAdapter'
+export { prompts } from './prompts'
+export * from './Dialog'

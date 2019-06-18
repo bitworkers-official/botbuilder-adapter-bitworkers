@@ -30,7 +30,7 @@ export interface StepContext<Options = any, Result = any> {
   ) => Promise<DialogTurnResult>) &
     ((dialog: Dialog<undefined>) => Promise<DialogTurnResult>)
 
-  readonly sendActivity: (text: string) => Promise<ResourceResponse | undefined>
+  readonly sendActivity: (text: any) => Promise<ResourceResponse | undefined>
   readonly endDialog: (returnValue?: any) => Promise<DialogTurnResult>
   readonly options: Options
   readonly result: Result
