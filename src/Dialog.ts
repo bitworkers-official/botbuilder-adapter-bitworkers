@@ -38,9 +38,11 @@ export interface StepContext<Options = any, Result = any> {
     message,
     retryMessage,
     promptType,
+    attachments,
   }: {
     message: string
     retryMessage?: string
+    attachments?: any[]
     promptType?: Prompt<any>
   }) => Promise<DialogTurnResult>
   readonly next: (result?: any) => Promise<DialogTurnResult>
@@ -142,7 +144,12 @@ function createStepContext(
     next() {
       return waterfallStepContext.next()
     },
-    prompt({ message, retryMessage, promptType = prompts.text() }) {
+    prompt({
+      message,
+      retryMessage,
+      attachments,
+      promptType = prompts.text(),
+    }) {
       const activeDialogId = waterfallStepContext.activeDialog!.id
       const activeDialogClass = getDialogClassById(activeDialogId, dialogMap)
       if (!activeDialogClass) {
@@ -152,6 +159,7 @@ function createStepContext(
       return waterfallStepContext.prompt(promptType.id, {
         prompt: message,
         retryPrompt: retryMessage,
+        attachments,
       })
     },
   }

@@ -172,7 +172,6 @@ export function createAdapter(
             return
           }
           try {
-            console.log('on mem')
             // notify that a user was added
             await onMembersAdded(turnContext, membersAdded!)
           } catch (error) {
