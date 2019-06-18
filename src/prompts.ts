@@ -12,7 +12,9 @@ import { randomId } from './Dialog'
 
 export const prompts = {
   text() {
-    return new TextPrompt(`text-prompt-${randomId()}`)
+    return new TextPrompt(`text-prompt-${randomId()}`, () =>
+      Promise.resolve(true)
+    )
   },
   choice({ style }: { style?: ListStyle } = {}) {
     const choicePrompt = new ChoicePrompt(`choice-prompt-${randomId()}`)
