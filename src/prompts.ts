@@ -27,7 +27,11 @@ export const prompts = {
   confirm() {
     return new ConfirmPrompt(`confirm-prompt-${randomId()}`)
   },
-  datetime({validator}:{validator?:PromptValidator<DateTimeResolution[]>}){
+  datetime({
+    validator,
+  }: {
+    validator?: PromptValidator<DateTimeResolution[]>
+  }) {
     return new DateTimePrompt(`date-prompt-${randomId()}`, validator)
-  }
+  },
 }
