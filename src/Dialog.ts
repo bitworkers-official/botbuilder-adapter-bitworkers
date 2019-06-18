@@ -10,7 +10,7 @@ import {
   WaterfallDialog,
   Prompt,
 } from 'botbuilder-dialogs'
-import { ResourceResponse } from 'botbuilder'
+import { ResourceResponse, Activity } from 'botbuilder'
 import { DialogMiddleware, createMiddlewareDialog } from './middleware'
 import { prompts } from './prompts'
 
@@ -45,6 +45,7 @@ export interface StepContext<Options = any, Result = any> {
   }) => Promise<DialogTurnResult>) &
     (({ attachments }: { attachments?: any[] }) => Promise<DialogTurnResult>)
   readonly next: (result?: any) => Promise<DialogTurnResult>
+  readonly activity: Activity
 }
 
 export type DialogMap = Map<
@@ -168,5 +169,6 @@ function createStepContext(
         retryPrompt: retryMessage,
       })
     },
+    activity: waterfallStepContext.context.activity,
   }
 }
