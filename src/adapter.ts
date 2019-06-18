@@ -161,6 +161,7 @@ export function createAdapter(
     ) {
       activityHandler.onMembersAdded(
         async (turnContext: TurnContext, next: () => Promise<void>) => {
+          _dialogContext = await _dialogSet.createContext(turnContext)
           const { membersAdded } = turnContext.activity
           const isBotAdded =
             membersAdded &&
