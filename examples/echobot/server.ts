@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 import * as restify from 'restify'
 import { BotFrameworkAdapter } from 'botbuilder'
-import { createEchoBot } from './echobot'
+import { createEchoBot } from './echoBot'
 
 const adapter = new BotFrameworkAdapter({
   appId: process.env.MicrosoftAppId,

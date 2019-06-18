@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "lint": "eslint src --ext ts && prettier --list-different src/*.ts",
-    "build": "tsc",
+    "build": "rimraf dist && tsc && mv dist/src dist2 && rimraf dist && mv dist2 dist",
     "semantic-release": "semantic-release",
     "dev": "npm run example:dialogbot",
     "test": "jest",
@@ -41,6 +41,7 @@
     "prettier": "^1.18.2",
     "prettier-config-bitworkers": "^1.5.1",
     "restify": "^8.3.3",
+    "rimraf": "^2.6.3",
     "semantic-release": "^15.13.16",
     "source-map-support": "^0.5.12",
     "ts-jest": "^24.0.2",
