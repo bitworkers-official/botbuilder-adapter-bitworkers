@@ -71,12 +71,7 @@ server.post('/api/messages', (req: any, res: any) => {
 const port = process.env.port || process.env.PORT || 3978
 
 server.listen(port, () => {
-  console.log(`
-  🌵  listening to http://localhost:${port}/api/messages
-
-  Get Bot Framework Emulator: https://aka.ms/botframework-emulator
-  See https://aka.ms/connect-to-bot for more information
-  `)
+  console.log(`🌵  listening to http://localhost:${port}/api/messages`)
 })
 ```
 
