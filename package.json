@@ -30,9 +30,7 @@
     "@types/lodash": "^4.14.134",
     "@types/restify": "^7.2.11",
     "@types/source-map-support": "^0.5.0",
-    "botbuilder": "^4.4.0",
     "botbuilder-ai": "^4.4.0",
-    "botbuilder-dialogs": "^4.4.0",
     "eslint": "^5.16.0",
     "eslint-config-bitworkers": "^1.27.5",
     "husky": "^2.4.1",
@@ -48,10 +46,6 @@
     "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.2"
-  },
-  "peerDependencies": {
-    "botbuilder": "^4.4.0",
-    "botbuilder-dialogs": "^4.4.0"
   },
   "husky": {
     "hooks": {
@@ -74,6 +68,8 @@
     ]
   },
   "dependencies": {
+    "botbuilder": "^4.4.0",
+    "botbuilder-dialogs": "^4.4.0",
     "colors": "^1.3.3",
     "lodash": "^4.17.11"
   }
