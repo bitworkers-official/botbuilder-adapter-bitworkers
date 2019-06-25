@@ -82,8 +82,12 @@ export interface Adapter {
     { propertyName, state }?: { propertyName?: string; state: BotState }
   ) => StateAccessor<T>
 
-  beginDialog: (dialog: Dialog) => Promise<void>
-  continueDialog: () => Promise<DialogTurnResult<any>>
+  readonly beginDialog: (<T extends object>(
+    dialog: Dialog<T>,
+    options: T
+  ) => Promise<DialogTurnResult>) &
+    ((dialog: Dialog<undefined>) => Promise<DialogTurnResult>)
+  readonly continueDialog: () => Promise<DialogTurnResult<any>>
 }
 
 /**
@@ -204,7 +208,8 @@ export function createAdapter(
         },
       }
     },
-    async beginDialog(dialog) {
+    // @ts-ignore
+    async beginDialog(dialog: Dialog, options: object | undefined) {
       if (!dialogMap.has(dialog)) {
         const id = `dialog-${randomId()}`
         const dialogClass = new (class extends ComponentDialog {
@@ -222,7 +227,7 @@ export function createAdapter(
         _dialogSet.add(dialogClass)
       }
       const dialogId = dialogMap.get(dialog)!.id
-      await _dialogContext.beginDialog(dialogId)
+      await _dialogContext.beginDialog(dialogId, options)
     },
     async continueDialog() {
       return _dialogContext.continueDialog()
