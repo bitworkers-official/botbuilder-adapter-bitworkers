@@ -10,7 +10,7 @@ import {
   WaterfallDialog,
   Prompt,
 } from 'botbuilder-dialogs'
-import { ResourceResponse, Activity } from 'botbuilder'
+import { ResourceResponse, Activity, TurnContext } from 'botbuilder'
 import { DialogMiddleware, createMiddlewareDialog } from './middleware'
 import { prompts } from './prompts'
 
@@ -24,6 +24,7 @@ export interface Dialog<Options = any> {
 }
 
 export interface StepContext<Options = any, Result = any> {
+  readonly turnContext: TurnContext
   readonly beginDialog: (<T extends object>(
     dialog: Dialog<T>,
     options: T
@@ -85,6 +86,7 @@ function createStepContext(
   dialogMap: DialogMap
 ): StepContext {
   return {
+    turnContext: waterfallStepContext.context,
     // @ts-ignore
     async beginDialog(dialog: Dialog, options: object | undefined) {
       if (!dialogMap.has(dialog)) {
