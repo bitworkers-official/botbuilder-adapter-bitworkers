@@ -143,8 +143,8 @@ function createStepContext(
     },
     options: waterfallStepContext.options,
     result: waterfallStepContext.result,
-    next() {
-      return waterfallStepContext.next()
+    next(result) {
+      return waterfallStepContext.next(result)
     },
     // @ts-ignore
     prompt({
