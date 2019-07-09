@@ -39,8 +39,10 @@ export interface StepContext<Options = any, Result = any> {
     message,
     retryMessage,
     promptType,
+    choices,
   }: {
     message?: string
+    choices?: string[]
     retryMessage?: string
     promptType?: Prompt<any>
   }) => Promise<DialogTurnResult>) &
@@ -154,6 +156,7 @@ function createStepContext(
       retryMessage,
       // @ts-ignore
       attachments,
+      choices,
       promptType = prompts.text(),
     }) {
       const activeDialogId = waterfallStepContext.activeDialog!.id
@@ -169,6 +172,7 @@ function createStepContext(
       return waterfallStepContext.prompt(promptType.id, {
         prompt,
         retryPrompt: retryMessage,
+        choices,
       })
     },
     activity: waterfallStepContext.context.activity,
