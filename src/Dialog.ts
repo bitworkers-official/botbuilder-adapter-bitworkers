@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable @typescript-eslint/no-use-before-define */
@@ -158,8 +159,14 @@ function createStepContext(
       attachments,
       // @ts-ignore
       choices,
-      promptType = prompts.text(),
+      // @ts-ignore
+      promptType,
     }) {
+      if (message && !promptType) {
+        promptType = prompts.text()
+      } else if (choices && !promptType) {
+        promptType = prompts.choice()
+      }
       const activeDialogId = waterfallStepContext.activeDialog!.id
       const activeDialogClass = getDialogClassById(activeDialogId, dialogMap)
       if (!activeDialogClass) {
