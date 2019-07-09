@@ -156,6 +156,7 @@ function createStepContext(
       retryMessage,
       // @ts-ignore
       attachments,
+      // @ts-ignore
       choices,
       promptType = prompts.text(),
     }) {
