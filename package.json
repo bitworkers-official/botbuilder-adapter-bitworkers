@@ -31,7 +31,7 @@
     "@types/restify": "^7.2.11",
     "@types/source-map-support": "^0.5.0",
     "botbuilder-ai": "^4.4.0",
-    "eslint": "^5.16.0",
+    "eslint": "^7.17.0",
     "eslint-config-bitworkers": "^1.27.28",
     "husky": "^2.4.1",
     "jest": "^24.8.0",
