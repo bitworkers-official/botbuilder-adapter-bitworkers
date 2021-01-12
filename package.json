@@ -22,7 +22,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitworkers-official/botbuilder-adapter.git"
+    "url": "https://github.com/bitworkers-official/botbuilder-adapter-bitworkers.git"
   },
   "devDependencies": {
     "@microsoft/recognizers-text-data-types-timex-expression": "^1.1.4",
