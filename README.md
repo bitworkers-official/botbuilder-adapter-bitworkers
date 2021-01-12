@@ -1,6 +1,6 @@
 [![travis build](https://img.shields.io/travis/bitworkers-official/botbuilder-adapter.svg?style=flat-square)](https://travis-ci.org/bitworkers-official/botbuilder-adapter) [![version](https://img.shields.io/npm/v/botbuilder-adapter.svg?style=flat-square)](http://npm.im/botbuilder-adapter) [![downloads](https://img.shields.io/npm/dm/botbuilder-adapter.svg?style=flat-square)](http://npm-stat.com/charts.html?package=botbuilder-adapter) [![MIT License](https://img.shields.io/npm/l/botbuilder-adapter.svg?style=flat-square)](http://opensource.org/licenses/MIT) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square)](https://github.com/semantic-release/semantic-release)
 
-# botbuilder-adapter
+# botbuilder-adapter-bitworkers
 
 ## Features
 
@@ -13,7 +13,7 @@
 Install the necessary dependencies:
 
 ```sh
-npm install botbuilder-adapter botbuilder botbuilder-dialogs restify typescript source-map-support &&
+npm install botbuilder-adapter-bitworkers botbuilder botbuilder-dialogs restify typescript source-map-support &&
 npm install --save-dev nodemon  @types/source-map-support ts-node
 ```
 
@@ -22,7 +22,7 @@ Create a bot:
 ```typescript
 // bot.ts
 import { ActivityHandler, TurnContext } from 'botbuilder'
-import { createAdapter } from 'botbuilder-adapter'
+import { createAdapter } from 'botbuilder-adapter-bitworkers'
 
 async function sendCactus(context: TurnContext): Promise<void> {
   await context.sendActivity('🌵')

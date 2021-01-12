@@ -1,5 +1,5 @@
 {
-  "name": "botbuilder-adapter",
+  "name": "botbuilder-adapter-bitworkers",
   "version": "0.0.0-semantically-released",
   "description": "Adapter for the BotbuilderJS framework",
   "main": "dist/index.js",
