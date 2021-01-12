@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable no-underscore-dangle */
 import {
   TurnContext,
   ConversationState,
@@ -19,7 +17,8 @@ import {
 import { Dialog, randomId, modStep, DialogMap } from './Dialog'
 
 /**
- * A state accessor is just a proxy around a value with the methods 'get' and 'set', similar to localStorage
+ * A state accessor is just a proxy around a value with the methods 'get' and 'set', similar to localStorage.
+ *
  * @example
  * ```js
  * // get the state
@@ -31,22 +30,22 @@ import { Dialog, randomId, modStep, DialogMap } from './Dialog'
  */
 export interface StateAccessor<T> {
   /**
-   * Get the value
+   * Get the value.
    */
   readonly get: (turnContext: TurnContext) => Promise<T>
   /**
-   * Set the value
+   * Set the value.
    */
   readonly set: (turnContext: TurnContext, value: T) => Promise<void>
 }
 
 export interface Adapter {
   /**
-   * Add dialogs to the dialog set
+   * Add dialogs to the dialog set.
    */
   readonly addDialogs: (dialogs: any[]) => void
   /**
-   * Create a dialog context for starting dialogs
+   * Create a dialog context for starting dialogs.
    */
   readonly createDialogContext: (
     turnContext: TurnContext
@@ -67,12 +66,12 @@ export interface Adapter {
   ) => void | Promise<void>
 
   /**
-   * Use state which can be used for saving data between turns
+   * Use state which can be used for saving data between turns.
    *
-   * @param initialState - the initial state
-   * @param options options
-   * @param options.propertyName - name of the state (e.g. for database tables)
-   * @param options.state - scope of the state, (e.g if the state is specific to a user or a specific to a group chat or both)
+   * @param initialState - The initial state.
+   * @param options - Options.
+   * @param options.propertyName - Name of the state (e.g. For database tables).
+   * @param options.state - Scope of the state, (e.g if the state is specific to a user or a specific to a group chat or both).
    * @example
    * const userState = adapter.useState({ name: 'Tom' }, {state: new UserState(cosmosDBStorage)})
    *
@@ -110,7 +109,7 @@ export function createAdapter(
     'dialog_state'
   )
   /**
-   * Dialog set, needed for adding and removing dialogs
+   * Dialog set, needed for adding and removing dialogs.
    */
   const _dialogSet = new DialogSet(_dialogState)
 

@@ -79,8 +79,9 @@ function getDialogClassById(
     id.endsWith(otherId)
   )
   if (!found) {
-    return undefined
+    return
   }
+  // eslint-disable-next-line consistent-return
   return found[1].dialogClass
 }
 

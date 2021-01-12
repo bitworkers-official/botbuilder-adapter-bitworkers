@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { RecognizerResult, TurnContext } from 'botbuilder'
 import { LuisRecognizer } from 'botbuilder-ai'
 import { BookingDetails } from './types'
@@ -9,11 +10,11 @@ export function parseCompositeEntity(
 ): string | undefined {
   const compositeEntity = result.entities[compositeName]
   if (!compositeEntity || !compositeEntity[0]) {
-    return undefined
+    return
   }
   const entity = compositeEntity[0][entityName]
   if (!entity || !entity[0]) {
-    return undefined
+    return
   }
   return entity[0][0]
 }
@@ -21,11 +22,11 @@ export function parseCompositeEntity(
 function parseDatetimeEntity(result: RecognizerResult): string | undefined {
   const datetimeEntity = result.entities.datetime
   if (!datetimeEntity || !datetimeEntity[0]) {
-    return undefined
+    return
   }
   const { timex } = datetimeEntity[0]
   if (!timex || !timex[0]) {
-    return undefined
+    return
   }
   return timex[0].split('T')[0]
 }
