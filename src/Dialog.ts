@@ -79,9 +79,9 @@ function getDialogClassById(
     id.endsWith(otherId)
   )
   if (!found) {
-    return
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    return undefined
   }
-  // eslint-disable-next-line consistent-return
   return found[1].dialogClass
 }
 
@@ -161,13 +161,8 @@ function createStepContext(
       // @ts-ignore
       choices,
       // @ts-ignore
-      promptType,
+      promptType = prompts.text(),
     }) {
-      if (message && !promptType) {
-        promptType = prompts.text()
-      } else if (choices && !promptType) {
-        promptType = prompts.choice()
-      }
       const activeDialogId = waterfallStepContext.activeDialog!.id
       const activeDialogClass = getDialogClassById(activeDialogId, dialogMap)
       if (!activeDialogClass) {
