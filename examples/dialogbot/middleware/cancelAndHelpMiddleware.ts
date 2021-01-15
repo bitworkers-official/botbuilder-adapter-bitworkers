@@ -27,6 +27,7 @@ async function interrupt(
       await innerDialogContext.context.sendActivity('Cancelling')
       return innerDialogContext.cancelAllDialogs()
     default:
+      // eslint-disable-next-line unicorn/no-useless-undefined
       return undefined
   }
 }
