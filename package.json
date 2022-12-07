@@ -35,7 +35,7 @@
     "eslint-config-bitworkers": "^1.27.31",
     "husky": "^2.7.0",
     "jest": "^24.9.0",
-    "lint-staged": "^8.2.1",
+    "lint-staged": "^13.1.0",
     "nodemon": "^1.19.4",
     "prettier": "^1.19.1",
     "prettier-config-bitworkers": "^1.5.2",
